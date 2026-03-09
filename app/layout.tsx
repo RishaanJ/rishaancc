@@ -26,6 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ "--font-apple-garamond": "'Apple Garamond Light', 'Garamond', 'EB Garamond', Georgia, serif" } as React.CSSProperties}
       >
         {children}
       </body>
