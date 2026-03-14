@@ -101,7 +101,6 @@ export default function Home() {
   )
   return (
     <>
-      <SmoothCursor />
       <div className="relative min-h-screen bg-white dark:bg-black overflow-hidden flex justify-center">
         {/* Gradient blob - top right */}
         <div

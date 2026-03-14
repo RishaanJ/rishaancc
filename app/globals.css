@@ -116,13 +116,7 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-*{
-  cursor: none !important;
-}
 
-body {
-  cursor: none !important;
-}
 
 @keyframes pop-in {
   0% {
