@@ -1,6 +1,8 @@
 import { SmoothCursor } from "@/components/ui/smooth-cursor"
 import ProjectCard from "@/components/ProjectCard"
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid"
+import BentoPhotos from "@/components/ui/bentophotos"
+import { InteractiveKbd } from "@/components/ui/interactive-kbd"
 import {
   CodeIcon,
   GlobeIcon,
@@ -103,7 +105,7 @@ export default function Home() {
       <div className="relative min-h-screen bg-white dark:bg-black overflow-hidden flex justify-center">
         {/* Gradient blob - top right */}
         <div
-          className="pointer-events-none absolute -top-30 -right-30 h-[450px] w-[450px] opacity-80"
+          className="pointer-events-none absolute -top-20 -right-20 md:-top-30 md:-right-30 h-[250px] w-[250px] md:h-[450px] md:w-[450px] opacity-80"
           style={{
             background:
               "radial-gradient(circle at 60% 40%, #e85d04 0%, #dc2626 25%, #f97316 45%, #fbbf24 60%, transparent 75%)",
@@ -113,17 +115,18 @@ export default function Home() {
 
         <main className="relative z-10 w-full max-w-xl flex flex-col pt-20 px-8 mx-auto">
           {/* Social links */}
-          <nav className="mb-3 flex gap-5 font-[family-name:var(--font-geist-sans)] text-xs text-black dark:text-white">
+          <nav className="mb-3 flex gap-5 font-[family-name:var(--font-geist-sans)] text-xs text-black dark:text-white animate-pop-in delay-1">
             <a href="#" className="hover:opacity-60 transition-opacity">x/twitter</a>
             <a href="#" className="hover:opacity-60 transition-opacity">linkedin</a>
             <a href="#" className="hover:opacity-60 transition-opacity">github</a>
           </nav>
 
-          <h1 className="font-[family-name:var(--font-geist-sans)] text-4xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1]">
+          <h1 className="font-[family-name:var(--font-geist-sans)] text-4xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] animate-pop-in delay-2">
             hey, i&apos;m rishaan
           </h1>
           <p
-            className="text-[1.75rem] tracking-[-0.03em] text-black dark:text-white mt-0.5 leading-[1.2]"
+            className="text-[1.75rem] tracking-[-0.03em] text-black dark:text-white mt-0.5 leading-[1.2] animate-pop-in delay-3"
+
             style={{
               fontFamily:
                 "'Apple Garamond Light', 'Apple Garamond', 'Garamond', 'EB Garamond', Georgia, serif",
@@ -133,7 +136,7 @@ export default function Home() {
             developer and builder based in San Fransisco
           </p>
 
-          <div className="mt-12">
+          <div className="mt-12 animate-pop-in delay-4">
             {projects.map((project, index) => (
               <ProjectCard
                 key={index}
@@ -145,7 +148,7 @@ export default function Home() {
           </div>
 
           {/* about me */}
-          <div className="mt-12">
+          <div className="mt-12 animate-pop-in delay-5">
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1]">
               about
             </h2>
@@ -155,17 +158,63 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Bento grid 
-          <div className="mt-12">
-            <BentoGrid className="auto-rows-[12rem] grid-cols-3">
-              {bentoItems.map((item) => (
-                <BentoCard key={item.name} {...item} />
-              ))}
-            </BentoGrid>
-          </div>
-          */}
 
         </main>
+      </div>
+      <div className="grid grid-cols-4 gap-2 auto-rows-[200px] px-18">
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 col-span-2 row-span-2 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0s" }}
+        >
+          {/* Content 1 / add picture here */}
+        </div>
+
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0.1s" }}
+        >
+          {/* Content 2 / add picture here */}
+        </div>
+
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 row-span-2 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0.2s" }}
+        >
+          {/* Content 3 / add picture here */}
+        </div>
+
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0.3s" }}
+        >
+          {/* Content 4 / add picture here */}
+        </div>
+
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 col-span-2 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0.4s" }}
+        >
+          {/* Content 5 / add picture here */}
+        </div>
+
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0.5s" }}
+        >
+          {/* Content 6 / add picture here */}
+        </div>
+
+        <div
+          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
+          style={{ animationDelay: "0.6s" }}
+        >
+          {/* Content 7 / add picture here */}
+        </div>
+      </div>
+      <div className="w-full flex justify-center mt-12 mb-2 font-[family-name:var(--font-geist-sans)]">
+        <div className="scale-75">
+          <InteractiveKbd />
+        </div>
       </div>
     </>
   );
