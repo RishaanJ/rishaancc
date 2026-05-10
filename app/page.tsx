@@ -72,7 +72,7 @@ const bentoItems = [
 export default function Home() {
   const projects = [
     {
-      title: "ssh sup.rishaan.cc",
+      title: "ssh sup@sup.rishaan.cc",
       description: "my terminal website",
       image: "https://via.placeholder.com/150",
     },
@@ -107,7 +107,7 @@ export default function Home() {
           className="pointer-events-none absolute -top-20 -right-20 md:-top-30 md:-right-30 h-[250px] w-[250px] md:h-[450px] md:w-[450px] opacity-80"
           style={{
             background:
-              "radial-gradient(circle at 60% 40%, #e85d04 0%, #dc2626 25%, #f97316 45%, #fbbf24 60%, transparent 75%)",
+              "radial-gradient(circle at 60% 40%, #e84804ff 0%, #ff0000ff 25%, #f97316 45%, #fbbf24 60%, transparent 75%)",
             filter: "blur(50px)",
           }}
         />
