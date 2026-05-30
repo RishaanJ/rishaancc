@@ -21,7 +21,7 @@ export default function Home() {
       image: "/sona8.png",
     },
     {
-      title: "Launchpad",
+      title: "Hackdeck",
       description: "All-in-one hackathon hosting platform — manage registrations, teams, judging, and announcements in one place.",
       mockup: <LaunchpadMockup />,
     },
