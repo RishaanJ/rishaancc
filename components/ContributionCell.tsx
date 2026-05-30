@@ -1,6 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function ContributionCell({
   title,
@@ -15,18 +16,37 @@ export default function ContributionCell({
   colIndex: number
   rowIndex: number
 }) {
+  const [hovered, setHovered] = useState(false)
+
+  // flip tooltip to bottom for top rows to avoid clipping
+  const showBelow = rowIndex < 3
+
   return (
-    <motion.div
-      title={title}
-      className={`w-[10px] h-[10px] rounded-[2px] cursor-pointer ${lightClass} ${darkClass}`}
-      initial={{ opacity: 0, scale: 0.4 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{
-        delay: (colIndex * 7 + rowIndex) * 0.003,
-        duration: 0.25,
-        ease: "easeOut",
-      }}
-      whileHover={{ scale: 1.7, transition: { duration: 0.12 } }}
-    />
+    <div className="relative" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <motion.div
+        className={`w-[10px] h-[10px] rounded-[2px] cursor-default ${lightClass} ${darkClass}`}
+        initial={{ opacity: 0, scale: 0.4 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          delay: (colIndex * 7 + rowIndex) * 0.003,
+          duration: 0.25,
+          ease: "easeOut",
+        }}
+      />
+      <AnimatePresence>
+        {hovered && title && !title.includes(": 0") && (
+          <motion.div
+            initial={{ opacity: 0, y: showBelow ? -4 : 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.12 }}
+            className={`pointer-events-none absolute ${showBelow ? "top-4" : "bottom-4"} left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded-md bg-black dark:bg-white px-2 py-1 font-[family-name:var(--font-geist-sans)] text-[10px] text-white dark:text-black shadow-md`}
+          >
+            {title}
+            <div className={`absolute left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent ${showBelow ? "-top-1.5 border-b-4 border-b-black dark:border-b-white" : "-bottom-1.5 border-t-4 border-t-black dark:border-t-white"}`} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }

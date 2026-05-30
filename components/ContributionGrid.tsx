@@ -1,5 +1,35 @@
 import ContributionCell from "./ContributionCell"
 
+async function fetchLastCommit(): Promise<{ message: string; repo: string; url: string } | null> {
+  try {
+    const res = await fetch(
+      "https://api.github.com/users/RishaanJ/events/public?per_page=30",
+      { next: { revalidate: 300 } }
+    )
+    const events = await res.json()
+    const push = events.find((e: any) => e.type === "PushEvent" && e.payload?.head)
+    if (!push) return null
+
+    const sha = push.payload.head
+    const repo = push.repo.name
+
+    const commitRes = await fetch(
+      `https://api.github.com/repos/${repo}/commits/${sha}`,
+      { next: { revalidate: 300 } }
+    )
+    if (!commitRes.ok) return null
+    const commit = await commitRes.json()
+
+    return {
+      message: commit.commit.message.split("\n")[0].slice(0, 60),
+      repo: repo.split("/")[1],
+      url: `https://github.com/${repo}/commit/${sha}`,
+    }
+  } catch {
+    return null
+  }
+}
+
 interface Contribution {
   date: string
   count: number
@@ -66,7 +96,7 @@ const LEVEL_DARK = [
 ]
 
 export default async function ContributionGrid() {
-  const contributions = await fetchContributions()
+  const [contributions, lastCommit] = await Promise.all([fetchContributions(), fetchLastCommit()])
   const total = contributions.reduce((s, c) => s + c.count, 0)
   const weeks = buildGrid(contributions)
 
@@ -85,6 +115,15 @@ export default async function ContributionGrid() {
           github ↗
         </a>
       </div>
+
+      {lastCommit && (
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0 animate-pulse" />
+          <span className="font-[family-name:var(--font-geist-mono)] text-[11px] text-gray-400 dark:text-gray-600 truncate max-w-[420px]">
+            {lastCommit.repo}: {lastCommit.message}
+          </span>
+        </div>
+      )}
 
       <div className="flex gap-[3px] overflow-hidden">
         {weeks.map((week, wi) => (
