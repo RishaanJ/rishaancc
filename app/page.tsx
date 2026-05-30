@@ -1,123 +1,53 @@
 import { SmoothCursor } from "@/components/ui/smooth-cursor"
 import ProjectCard from "@/components/ProjectCard"
-import { BentoCard, BentoGrid } from "@/components/ui/bento-grid"
-import BentoPhotos from "@/components/ui/bentophotos"
-import { InteractiveKbd } from "@/components/ui/interactive-kbd"
-import {
-  CodeIcon,
-  GlobeIcon,
-  RocketIcon,
-  ImageIcon,
-  LaptopIcon,
-  CameraIcon,
-} from "@radix-ui/react-icons"
+import { GridPattern } from "@/components/ui/grid-pattern"
+import VisitorCounter from "@/components/VisitorCounter"
+import SshCallout from "@/components/SshCallout"
+import HeroGradient from "@/components/HeroGradient"
+import ContributionGrid from "@/components/ContributionGrid"
+import LaunchpadMockup from "@/components/LaunchpadMockup"
+import Stack from "@/components/Stack"
+import FadeIn from "@/components/FadeIn"
+import { Marquee } from "@/components/ui/marquee"
 
-const bentoItems = [
-  {
-    Icon: CodeIcon,
-    name: "Code",
-    description: "building things",
-    href: "#",
-    cta: "View",
-    className: "col-span-2",
-    background: <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900" />,
-  },
-  {
-    Icon: CameraIcon,
-    name: "Photography",
-    description: "capturing moments",
-    href: "#",
-    cta: "View",
-    className: "col-span-1",
-    background: <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-800" />,
-  },
-  {
-    Icon: GlobeIcon,
-    name: "Travel",
-    description: "exploring the world",
-    href: "#",
-    cta: "View",
-    className: "col-span-1",
-    background: <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-800" />,
-  },
-  {
-    Icon: RocketIcon,
-    name: "Projects",
-    description: "shipping fast",
-    href: "#",
-    cta: "View",
-    className: "col-span-2",
-    background: <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900" />,
-  },
-  {
-    Icon: LaptopIcon,
-    name: "Setup",
-    description: "my workspace",
-    href: "#",
-    cta: "View",
-    className: "col-span-2",
-    background: <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-800" />,
-  },
-  {
-    Icon: ImageIcon,
-    name: "Design",
-    description: "ui explorations",
-    href: "#",
-    cta: "View",
-    className: "col-span-1",
-    background: <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-900" />,
-  },
-]
+const row1 = ["typescript","javascript","python","openjdk","nextdotjs","react","tailwindcss","nodedotjs","express"]
+const row2 = ["flask","vercel","pytorch","tensorflow","opencv","ubuntu","nginx","gnubash","git","github"]
 
 export default function Home() {
   const projects = [
     {
-      title: "ssh sup@sup.rishaan.cc",
-      description: "my terminal website",
-      image: "https://via.placeholder.com/150",
-    },
-    {
       title: "Sona",
-      description: "ai powered radiology",
-      image: "https://via.placeholder.com/150",
+      description: "AI-powered radiology assistant that helps doctors analyze medical imaging faster and more accurately.",
+      image: "/sona8.png",
     },
     {
       title: "Launchpad",
-      description: "all in one hackathon hosting platform",
-      image: "https://via.placeholder.com/150",
+      description: "All-in-one hackathon hosting platform — manage registrations, teams, judging, and announcements in one place.",
+      mockup: <LaunchpadMockup />,
     },
-  ];
-  const italicSpan = (text: string) => (
-    <span
-      className="text-lg"
-      style={{
-        fontFamily:
-          "'Apple Garamond Light', 'Apple Garamond', 'Garamond', 'EB Garamond', Georgia, serif",
-        fontStyle: "italic",
-      }}
-    >
-      {text}
-    </span>
+  ]
+
+  const em = (text: string) => (
+    <span className="shimmer-text font-medium">{text}</span>
   )
+
   return (
     <>
       <div className="relative min-h-screen bg-white dark:bg-black overflow-hidden flex justify-center">
-        {/* Gradient blob - top right */}
-        <div
-          className="pointer-events-none absolute -top-20 -right-20 md:-top-30 md:-right-30 h-[250px] w-[250px] md:h-[450px] md:w-[450px] opacity-80"
-          style={{
-            background:
-              "radial-gradient(circle at 60% 40%, #e84804ff 0%, #ff0000ff 25%, #f97316 45%, #fbbf24 60%, transparent 75%)",
-            filter: "blur(50px)",
-          }}
+        <GridPattern
+          width={40}
+          height={40}
+          className="absolute inset-0 h-full w-full fill-transparent stroke-gray-200/30 dark:stroke-gray-800/30 [mask-image:radial-gradient(ellipse_at_top,white_20%,transparent_70%)]"
         />
 
-        <main className="relative z-10 w-full max-w-xl flex flex-col pt-20 px-8 mx-auto">
+        <HeroGradient />
+
+        <main className="relative z-10 w-full max-w-3xl flex flex-col pt-20 px-8 mx-auto">
           {/* Social links */}
           <nav className="mb-3 flex gap-5 font-[family-name:var(--font-geist-sans)] text-xs text-black dark:text-white animate-pop-in delay-1">
-            <a href="#" className="hover:opacity-60 transition-opacity">x/twitter</a>
-            <a href="#" className="hover:opacity-60 transition-opacity">linkedin</a>
-            <a href="#" className="hover:opacity-60 transition-opacity">github</a>
+            <a href="https://x.com/rishaan_j" target="_blank" className="nav-link">x/twitter</a>
+            <a href="https://www.linkedin.com/in/rishaan-jain-517b80275/" target="_blank" className="nav-link">linkedin</a>
+            <a href="https://github.com/RishaanJ" target="_blank" className="nav-link">github</a>
           </nav>
 
           <h1 className="font-[family-name:var(--font-geist-sans)] text-4xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] animate-pop-in delay-2">
@@ -125,96 +55,60 @@ export default function Home() {
           </h1>
           <p
             className="text-[1.75rem] tracking-[-0.03em] text-black dark:text-white mt-0.5 leading-[1.2] animate-pop-in delay-3"
-
             style={{
-              fontFamily:
-                "'Apple Garamond Light', 'Apple Garamond', 'Garamond', 'EB Garamond', Georgia, serif",
+              fontFamily: "'Apple Garamond Light', 'Apple Garamond', 'Garamond', 'EB Garamond', Georgia, serif",
               fontStyle: "italic",
             }}
           >
             developer and builder based in San Fransisco
           </p>
 
-          <div className="mt-12 animate-pop-in delay-4">
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={index}
-                image={project.image}
-                title={project.title}
-                tagline={project.description}
-              />
-            ))}
+          <div className="mt-6 animate-pop-in delay-4">
+            <SshCallout />
           </div>
 
+          {/* contribution grid */}
+          <FadeIn className="mt-12">
+            <ContributionGrid />
+          </FadeIn>
+
+          {/* stack */}
+          <FadeIn className="mt-12" delay={0.05}>
+            <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
+              stack
+            </h2>
+            <Stack />
+            <div className="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)] dark:[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            </div>
+          </FadeIn>
+
           {/* about me */}
-          <div className="mt-12 animate-pop-in delay-5">
+          <FadeIn className="mt-12" delay={0.05}>
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1]">
               about
             </h2>
-            <p className="font-[family-name:var(--font-geist-sans)] text-sm tracking-[-3%] mt-4 font-normal">
-              I’m a student developer who likes building things on the {italicSpan("internet")}. Most of what I work on is software, AI, and random ideas that turn into projects.
-              I spend a lot of time experimenting with new tech, building apps, and going to hackathons. Lately I’ve been really interested in AI, fintech, and tools that solve {italicSpan("real problems")}. A lot of my projects start as random ideas that I just get curious about and decide to build. I like figuring things out as I go and seeing how far an idea can turn into something {italicSpan("real.")}
+            <p className="font-[family-name:var(--font-geist-sans)] text-sm tracking-[-3%] mt-4 font-normal text-gray-700 dark:text-gray-300">
+              I’m a student developer who likes {em("building things on the internet")}. Most of what I work on is software, AI, and random ideas that turn into projects. I spend a lot of time experimenting with new tech, building apps, and going to hackathons. Lately I’ve been really {em("interested in AI, fintech, and tools that solve real problems")}. A lot of my projects start as random ideas that I just get curious about and decide to build. I like figuring things out as I go and seeing how far an idea can turn into something {em("real")}.
             </p>
-          </div>
+          </FadeIn>
 
+          {/* projects */}
+          <FadeIn className="mt-12">
+            <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
+              projects
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {projects.map((project, index) => (
+                <ProjectCard key={index} {...project} />
+              ))}
+            </div>
+          </FadeIn>
 
+          <FadeIn className="mt-12 mb-12">
+            <VisitorCounter />
+          </FadeIn>
         </main>
       </div>
-      <div className="grid grid-cols-4 gap-2 auto-rows-[200px] px-18">
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 col-span-2 row-span-2 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0s" }}
-        >
-          {/* Content 1 / add picture here */}
-        </div>
-
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0.1s" }}
-        >
-          {/* Content 2 / add picture here */}
-        </div>
-
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 row-span-2 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0.2s" }}
-        >
-          {/* Content 3 / add picture here */}
-        </div>
-
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0.3s" }}
-        >
-          {/* Content 4 / add picture here */}
-        </div>
-
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 col-span-2 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0.4s" }}
-        >
-          {/* Content 5 / add picture here */}
-        </div>
-
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0.5s" }}
-        >
-          {/* Content 6 / add picture here */}
-        </div>
-
-        <div
-          className="relative bg-neutral-200 dark:bg-neutral-800 rounded-2xl p-6 animate-pop-in overflow-hidden"
-          style={{ animationDelay: "0.6s" }}
-        >
-          {/* Content 7 / add picture here */}
-        </div>
-      </div>
-      <div className="w-full flex justify-center mt-12 mb-2 font-[family-name:var(--font-geist-sans)]">
-        <div className="scale-75">
-          <InteractiveKbd />
-        </div>
-      </div>
     </>
-  );
+  )
 }

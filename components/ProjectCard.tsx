@@ -1,59 +1,80 @@
 'use client'
 
 import { motion } from "framer-motion"
+import { GlobeIcon, GitHubLogoIcon } from "@radix-ui/react-icons"
 
 export default function ProjectCard({
-  image,
   title,
-  tagline,
+  description,
+  image,
+  gradient,
+  mockup,
+  url,
+  github,
 }: {
+  title: string
+  description: string
   image?: string
-  title?: string
-  tagline?: string
+  gradient?: string
+  mockup?: React.ReactNode
+  url?: string
+  github?: string
 }) {
-
-  const isLoading = !image || !title || !tagline
-
-  if (isLoading) {
-    return (
-      <motion.div className="w-[75%] mt-4">
-        <div className="animate-pulse flex items-center gap-4">
-
-          {/* square image */}
-          <div className="w-14 h-14 bg-neutral-200 rounded-lg flex-shrink-0" />
-
-          <div className="flex flex-col w-full gap-2">
-            {/* title */}
-            <div className="w-1/2 h-4 bg-neutral-200 rounded-md" />
-
-            {/* tagline */}
-            <div className="w-2/3 h-3 bg-neutral-200 rounded-md" />
-          </div>
-
-        </div>
-      </motion.div>
-    )
-  }
-
   return (
-    <motion.div className="w-[75%] mt-4 flex items-center gap-4">
-      
-      {/*<img
-        src={image}
-        className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-      />*/}
-      <div className="w-10 h-10 bg-neutral-200 rounded-lg flex-shrink-0" />
-
-
-      <div className="flex flex-col">
-        <h3 className="font-medium font-[family-name:var(--font-geist-sans)] text-xl font-normal tracking-[-0.05em] ">{title}</h3>
-        <p className="text-m tracking-[-3%]" style={{
-          fontFamily:
-            "'Apple Garamond Light', 'Apple Garamond', 'Garamond', 'EB Garamond', Georgia, serif",
-          fontStyle: "italic",
-        }}>{tagline}</p>
+    <motion.div
+      className="rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col bg-white dark:bg-black cursor-default"
+      whileHover={{ y: -4, transition: { duration: 0.2, ease: "easeOut" } }}
+    >
+      {/* Image / preview */}
+      <div
+        className="w-full aspect-[16/9] overflow-hidden"
+        style={{ background: mockup ? undefined : (gradient ?? "linear-gradient(135deg, #e5e7eb, #f3f4f6)") }}
+      >
+        {mockup ? mockup : image ? (
+          <motion.img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover object-top"
+            whileHover={{ scale: 1.04, transition: { duration: 0.4, ease: "easeOut" } }}
+          />
+        ) : null}
       </div>
 
+      {/* Info */}
+      <div className="p-5 flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-[family-name:var(--font-geist-sans)] font-semibold text-lg tracking-[-0.04em] text-black dark:text-white leading-tight">
+            {title}
+          </h3>
+          <div className="flex items-center gap-2 text-gray-400 dark:text-gray-600 mt-0.5 shrink-0">
+            {github && (
+              <motion.a
+                href={github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black dark:hover:text-white transition-colors"
+                whileHover={{ scale: 1.2 }}
+              >
+                <GitHubLogoIcon className="w-4 h-4" />
+              </motion.a>
+            )}
+            {url && (
+              <motion.a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-black dark:hover:text-white transition-colors"
+                whileHover={{ scale: 1.2 }}
+              >
+                <GlobeIcon className="w-4 h-4" />
+              </motion.a>
+            )}
+          </div>
+        </div>
+        <p className="font-[family-name:var(--font-geist-sans)] text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+          {description}
+        </p>
+      </div>
     </motion.div>
   )
 }

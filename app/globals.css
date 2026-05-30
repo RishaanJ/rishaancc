@@ -2,6 +2,40 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* View transition: circle reveal from click origin */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Going dark: new dark layer expands as a circle */
+[data-vt-dark="1"]::view-transition-new(root) {
+  animation: vt-circle-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%));
+}
+[data-vt-dark="1"]::view-transition-old(root) {
+  z-index: -1;
+}
+
+/* Going light: old dark layer contracts as a circle */
+[data-vt-dark="0"]::view-transition-old(root) {
+  animation: vt-circle-out 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%));
+}
+[data-vt-dark="0"]::view-transition-new(root) {
+  z-index: -1;
+}
+
+@keyframes vt-circle-in {
+  from { clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+  to   { clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+}
+@keyframes vt-circle-out {
+  from { clip-path: circle(150% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+  to   { clip-path: circle(0% at var(--vt-x, 50%) var(--vt-y, 50%)); }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -45,6 +79,24 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
 }
 
 :root {
@@ -116,7 +168,56 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes shimmer {
+  0%   { background-position: -300% center; }
+  100% { background-position: 300% center; }
+}
 
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #111 30%,
+    #f97316 50%,
+    #111 70%
+  );
+  background-size: 300% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+.dark .shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #eee 30%,
+    #f97316 50%,
+    #eee 70%
+  );
+  background-size: 300% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Nav link underline slide */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover::after {
+  width: 100%;
+}
 
 @keyframes pop-in {
   0% {
@@ -146,12 +247,11 @@
   animation: blob-float 15s infinite ease-in-out;
 }
 
-
 .delay-1 { animation-delay: 0.05s; }
 .delay-2 { animation-delay: 0.12s; }
 .delay-3 { animation-delay: 0.2s; }
-.delay-4 { animation-delay: 0.32s; }
-.delay-5 { animation-delay: 0.45s; }
+.delay-4 { animation-delay: 0.27s; }
+.delay-5 { animation-delay: 0.34s; }
 
 @layer base {
   * {
