@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ComposedChart, Bar, Line, XAxis, ResponsiveContainer, Cell } from "recharts"
+import Link from "next/link"
 
-// Deterministic fake candlestick data
 const RAW = [
   { o: 42, h: 47, l: 40, c: 45 },
   { o: 45, h: 48, l: 43, c: 44 },
@@ -22,7 +22,6 @@ const RAW = [
 
 const data = RAW.map((d, i) => ({
   ...d,
-  // recharts trick: bar starts at low, body is |c-o|, wick uses line
   base: d.l,
   bodyBase: Math.min(d.o, d.c),
   bodyHeight: Math.abs(d.c - d.o) || 0.5,
@@ -30,21 +29,25 @@ const data = RAW.map((d, i) => ({
   label: `W${i + 1}`,
 }))
 
-const PRICE = "68.42"
-const CHANGE = "+4.18"
-const PCT = "+6.5%"
+const fundamentals = [
+  { label: "Sector",        value: "Software / AI" },
+  { label: "52W High",      value: "post-hackathon" },
+  { label: "52W Low",       value: "finals week" },
+  { label: "Stage",         value: "pre-revenue" },
+  { label: "Open Source",   value: "yes" },
+  { label: "For Hire",      value: "immediately" },
+]
 
-const ratings = [
-  { label: "Strong Buy", count: 8, color: "#22c55e" },
-  { label: "Buy", count: 4, color: "#86efac" },
-  { label: "Hold", count: 1, color: "#94a3b8" },
+const analysts = [
+  { firm: "Y Combinator",   rating: "Strong Buy",  note: "ships fast" },
+  { firm: "Sequoia",        rating: "Buy",         note: "too many ideas" },
+  { firm: "His Mom",        rating: "Strong Buy",  note: "very smart boy" },
 ]
 
 export default function StockTicker() {
   const [open, setOpen] = useState(false)
-  const [price, setPrice] = useState(parseFloat(PRICE))
+  const [price, setPrice] = useState(68.42)
 
-  // Subtle price wobble
   useEffect(() => {
     const id = setInterval(() => {
       setPrice(p => parseFloat((p + (Math.random() - 0.46) * 0.08).toFixed(2)))
@@ -52,8 +55,12 @@ export default function StockTicker() {
     return () => clearInterval(id)
   }, [])
 
+  const change = (price - 68.42).toFixed(2)
+  const pct = (((price - 68.42) / 68.42) * 100).toFixed(2)
+  const up = price >= 68.42
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2">
       <AnimatePresence>
         {open && (
           <motion.div
@@ -61,28 +68,29 @@ export default function StockTicker() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.96 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-xl p-4 w-[220px] shadow-sm"
+            className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-xl p-4 w-[240px] shadow-sm"
           >
             {/* Header */}
-            <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start justify-between mb-1">
               <div>
-                <p className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600 uppercase tracking-widest">NYSE: RISH</p>
-                <p className="font-[family-name:var(--font-geist-sans)] font-semibold text-xl text-black dark:text-white tabular-nums">${price.toFixed(2)}</p>
-                <p className="font-[family-name:var(--font-geist-sans)] text-xs text-green-500">{CHANGE} ({PCT}) today</p>
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <p className="font-[family-name:var(--font-geist-sans)] text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest">NASDAQ: RISH</p>
+                  <span className="text-[9px] font-[family-name:var(--font-geist-sans)] bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">hiring</span>
+                </div>
+                <p className="font-[family-name:var(--font-geist-sans)] font-semibold text-2xl text-black dark:text-white tabular-nums">${price.toFixed(2)}</p>
+                <p className={`font-[family-name:var(--font-geist-sans)] text-xs ${up ? "text-green-500" : "text-red-500"}`}>
+                  {up ? "+" : ""}{change} ({up ? "+" : ""}{pct}%) today
+                </p>
               </div>
-              <span className="text-[10px] font-[family-name:var(--font-geist-sans)] bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-1.5 py-0.5 rounded-full font-medium">HIRE</span>
             </div>
 
             {/* Chart */}
-            <div className="h-[70px] -mx-1 mb-3">
+            <div className="h-[60px] -mx-1 my-3">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={data} barCategoryGap="20%">
                   <XAxis dataKey="label" hide />
-                  {/* Wick line */}
                   <Line type="monotone" dataKey="h" dot={false} stroke="transparent" />
-                  {/* Low base (invisible spacer) */}
                   <Bar dataKey="base" stackId="c" fill="transparent" stroke="none" />
-                  {/* Candle body */}
                   <Bar dataKey="bodyHeight" stackId="c" radius={[1,1,1,1]}>
                     {data.map((d, i) => (
                       <Cell key={i} fill={d.up ? "#22c55e" : "#ef4444"} />
@@ -92,25 +100,48 @@ export default function StockTicker() {
               </ResponsiveContainer>
             </div>
 
+            {/* Fundamentals */}
+            <div className="border-t border-gray-100 dark:border-gray-800 pt-3 mb-3">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                {fundamentals.map(f => (
+                  <div key={f.label}>
+                    <p className="font-[family-name:var(--font-geist-sans)] text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-widest">{f.label}</p>
+                    <p className="font-[family-name:var(--font-geist-sans)] text-[11px] text-black dark:text-white font-medium">{f.value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Analyst ratings */}
             <div className="border-t border-gray-100 dark:border-gray-800 pt-3">
-              <p className="font-[family-name:var(--font-geist-sans)] text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2">Analyst Ratings</p>
-              {ratings.map(r => (
-                <div key={r.label} className="flex items-center gap-2 mb-1">
-                  <div className="w-full bg-gray-100 dark:bg-gray-900 rounded-full h-1.5 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${(r.count / 13) * 100}%`, background: r.color }}
-                    />
+              <p className="font-[family-name:var(--font-geist-sans)] text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-2">Analyst Ratings</p>
+              {analysts.map(a => (
+                <div key={a.firm} className="flex items-center justify-between mb-1.5">
+                  <div>
+                    <p className="font-[family-name:var(--font-geist-sans)] text-[10px] text-black dark:text-white font-medium">{a.firm}</p>
+                    <p className="font-[family-name:var(--font-geist-sans)] text-[9px] text-gray-400 dark:text-gray-600">{a.note}</p>
                   </div>
-                  <span className="font-[family-name:var(--font-geist-sans)] text-[10px] text-gray-400 dark:text-gray-600 whitespace-nowrap w-16 text-right">{r.label}</span>
+                  <span className={`font-[family-name:var(--font-geist-sans)] text-[9px] font-medium px-1.5 py-0.5 rounded-full ${
+                    a.rating === "Strong Buy"
+                      ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                      : "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                  }`}>{a.rating}</span>
                 </div>
               ))}
             </div>
 
-            {/* Disclaimer */}
+            <Link href="/hire">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="mt-3 w-full bg-green-500 hover:bg-green-400 transition-colors text-white font-semibold py-2.5 rounded-lg text-xs cursor-pointer font-[family-name:var(--font-geist-sans)]"
+              >
+                Buy 1 share of RISH →
+              </motion.button>
+            </Link>
+
             <p className="font-[family-name:var(--font-geist-sans)] text-[9px] text-gray-300 dark:text-gray-800 mt-2">
-              *not real financial advice. probably.
+              *not real financial advice. or is it 👀
             </p>
           </motion.div>
         )}
@@ -124,7 +155,9 @@ export default function StockTicker() {
         whileTap={{ scale: 0.97 }}
       >
         <span className="font-[family-name:var(--font-geist-sans)] text-xs font-medium text-black dark:text-white">$RISH</span>
-        <span className="font-[family-name:var(--font-geist-sans)] text-xs text-green-500 tabular-nums">{PCT}</span>
+        <span className={`font-[family-name:var(--font-geist-sans)] text-xs tabular-nums ${up ? "text-green-500" : "text-red-500"}`}>
+          {up ? "▲" : "▼"}{Math.abs(parseFloat(pct))}%
+        </span>
       </motion.button>
     </div>
   )

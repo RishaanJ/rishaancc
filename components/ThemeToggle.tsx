@@ -40,7 +40,7 @@ export default function ThemeToggle() {
   }
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 flex items-center gap-1 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-black p-1 shadow-sm">
+    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 flex items-center gap-1 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-black p-1 shadow-sm">
       {options.map(({ value, icon: Icon }) => (
         <button
           key={value}

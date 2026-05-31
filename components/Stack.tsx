@@ -47,8 +47,8 @@ export default function Stack() {
   return (
     <div className="flex flex-col gap-4">
       {stack.map(({ category, items }) => (
-        <div key={category} className="flex items-start gap-6">
-          <span className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600 w-16 shrink-0 pt-[7px]">
+        <div key={category} className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-6">
+          <span className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600 w-16 shrink-0 sm:pt-[7px]">
             {category}
           </span>
           <div className="flex flex-wrap gap-2">
