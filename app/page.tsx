@@ -24,9 +24,10 @@ export default function Home() {
       image: "/sona8.png",
     },
     {
-      title: "Hackdeck",
-      description: "All-in-one hackathon hosting platform — manage registrations, teams, judging, and announcements in one place.",
-      mockup: <LaunchpadMockup />,
+      title: "Heatmap",
+      description: "macOS activity tracker that visualizes your focus as a year-long heatmap. GitHub commit graph, for your life.",
+      image: "/heatmap.png",
+      url: "https://heatmap.rishaan.cc",
     },
   ]
 
