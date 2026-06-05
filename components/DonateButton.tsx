@@ -33,8 +33,15 @@ export default function DonateButton() {
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               className="absolute bottom-full right-0 mb-2 z-50 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 shadow-sm w-48 text-center"
             >
-              <p className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-black dark:text-white">coming soon</p>
-              <p className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600 mt-0.5">donation page in the works ☕</p>
+              <a
+                href="https://ko-fi.com/rishaanjain"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-[family-name:var(--font-geist-sans)] text-sm font-medium text-black dark:text-white hover:opacity-70 transition-opacity"
+              >
+                ko-fi ☕
+              </a>
+              <p className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600 mt-0.5">support my work</p>
             </motion.div>
           </>
         )}

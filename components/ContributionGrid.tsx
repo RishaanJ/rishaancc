@@ -136,6 +136,7 @@ export default async function ContributionGrid() {
                 darkClass={LEVEL_DARK[day?.level ?? 0]}
                 colIndex={wi}
                 rowIndex={di}
+                totalCols={weeks.length}
               />
             ))}
           </div>
