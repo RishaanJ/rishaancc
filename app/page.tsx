@@ -1,4 +1,5 @@
 import ProjectCard from "@/components/ProjectCard"
+import Link from "next/link"
 import { ArrowRightIcon } from "@radix-ui/react-icons"
 import DonateButton from "@/components/DonateButton"
 import { GridPattern } from "@/components/ui/grid-pattern"
@@ -53,6 +54,7 @@ export default function Home() {
             <a href="https://x.com/rishaan_j" target="_blank" className="nav-link">x/twitter</a>
             <a href="https://www.linkedin.com/in/rishaan-jain-517b80275/" target="_blank" className="nav-link">linkedin</a>
             <a href="https://github.com/RishaanJ" target="_blank" className="nav-link">github</a>
+            <Link href="/design" className="nav-link">design</Link>
             <a href="mailto:rishaanjain188@gmail.com" className="nav-link ml-auto text-gray-400 dark:text-gray-600 hover:text-black dark:hover:text-white transition-colors">rishaanjain188@gmail.com</a>
           </nav>
 
