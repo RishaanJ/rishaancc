@@ -1,49 +1,7 @@
-const stack = [
-  {
-    category: "Languages",
-    items: [
-      { name: "TypeScript", slug: "typescript", color: "#3178C6" },
-      { name: "JavaScript", slug: "javascript", color: "#F7DF1E" },
-      { name: "Python", slug: "python", color: "#3776AB" },
-      { name: "Java", slug: "openjdk", color: "#ED8B00" },
-    ],
-  },
-  {
-    category: "Frontend",
-    items: [
-      { name: "Next.js", slug: "nextdotjs", color: "#000000" },
-      { name: "React", slug: "react", color: "#61DAFB" },
-      { name: "Tailwind", slug: "tailwindcss", color: "#06B6D4" },
-    ],
-  },
-  {
-    category: "Backend",
-    items: [
-      { name: "Node.js", slug: "nodedotjs", color: "#339933" },
-      { name: "Express", slug: "express", color: "#888888" },
-      { name: "Flask", slug: "flask", color: "#888888" },
-      { name: "Vercel", slug: "vercel", color: "#888888" },
-    ],
-  },
-  {
-    category: "AI / ML",
-    items: [
-      { name: "PyTorch", slug: "pytorch", color: "#EE4C2C" },
-      { name: "TensorFlow", slug: "tensorflow", color: "#FF6F00" },
-      { name: "OpenCV", slug: "opencv", color: "#5C3EE8" },
-    ],
-  },
-  {
-    category: "Infra",
-    items: [
-      { name: "Ubuntu", slug: "ubuntu", color: "#E95420" },
-      { name: "nginx", slug: "nginx", color: "#009639" },
-      { name: "Bash", slug: "gnubash", color: "#4EAA25" },
-    ],
-  },
-]
+import { defaultContent } from "@/lib/content/defaults"
+import type { StackCategory } from "@/lib/content/types"
 
-export default function Stack() {
+export default function Stack({ stack = defaultContent.stack }: { stack?: StackCategory[] }) {
   return (
     <div className="flex flex-col gap-4">
       {stack.map(({ category, items }) => (

@@ -2,24 +2,22 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { defaultContent } from "@/lib/content/defaults"
 
-const lines = [
-  "developer and builder based in San Francisco",
-  "turning ideas into URLs since 2021",
-  "pre-revenue. aggressively building.",
-  "shipping things nobody asked for",
-  "building in public. breaking in private.",
-]
-
-export default function RotatingSubtitle() {
+export default function RotatingSubtitle({
+  lines = defaultContent.subtitle,
+}: {
+  lines?: string[]
+}) {
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
+    if (lines.length <= 1) return
     const id = setInterval(() => {
       setIndex(i => (i + 1) % lines.length)
     }, 5000)
     return () => clearInterval(id)
-  }, [])
+  }, [lines.length])
 
   return (
     <div className="relative" style={{ minHeight: "2.4rem" }}>

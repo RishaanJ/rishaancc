@@ -1,40 +1,22 @@
 import ProjectCard from "@/components/ProjectCard"
 import Link from "next/link"
-import { ArrowRightIcon } from "@radix-ui/react-icons"
 import DonateButton from "@/components/DonateButton"
 import { GridPattern } from "@/components/ui/grid-pattern"
 import VisitorCounter from "@/components/VisitorCounter"
 import SshCallout from "@/components/SshCallout"
 import HeroGradient from "@/components/HeroGradient"
 import ContributionGrid from "@/components/ContributionGrid"
-import LaunchpadMockup from "@/components/LaunchpadMockup"
 import Stack from "@/components/Stack"
 import FadeIn from "@/components/FadeIn"
-import { Marquee } from "@/components/ui/marquee"
 import RotatingSubtitle from "@/components/RotatingSubtitle"
 import Greeting from "@/components/Greeting"
+import AboutText from "@/components/AboutText"
+import { getAllSections } from "@/lib/content/store"
 
-const row1 = ["typescript","javascript","python","openjdk","nextdotjs","react","tailwindcss","nodedotjs","express"]
-const row2 = ["flask","vercel","pytorch","tensorflow","opencv","ubuntu","nginx","gnubash","git","github"]
+export const revalidate = 30
 
-export default function Home() {
-  const projects = [
-    {
-      title: "Sona",
-      description: "AI-powered radiology assistant that helps doctors analyze medical imaging faster and more accurately.",
-      image: "/sona8.png",
-    },
-    {
-      title: "Heatmap",
-      description: "macOS activity tracker that visualizes your focus as a year-long heatmap. GitHub commit graph, for your life.",
-      image: "/heatmap.png",
-      url: "https://heatmap.rishaan.cc",
-    },
-  ]
-
-  const em = (text: string) => (
-    <span className="shimmer-text font-medium">{text}</span>
-  )
+export default async function Home() {
+  const content = await getAllSections()
 
   return (
     <>
@@ -59,10 +41,10 @@ export default function Home() {
           </nav>
 
           <div className="animate-pop-in delay-2">
-            <Greeting />
+            <Greeting text={content.greeting} />
           </div>
           <div className="mt-0.5 animate-pop-in delay-3">
-            <RotatingSubtitle />
+            <RotatingSubtitle lines={content.subtitle} />
           </div>
 
           <div className="mt-6 animate-pop-in delay-4">
@@ -79,7 +61,7 @@ export default function Home() {
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
               stack
             </h2>
-            <Stack />
+            <Stack stack={content.stack} />
             <div className="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)] dark:[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
             </div>
           </FadeIn>
@@ -89,9 +71,7 @@ export default function Home() {
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1]">
               about
             </h2>
-            <p className="font-[family-name:var(--font-geist-sans)] text-sm tracking-[-3%] mt-4 font-normal text-gray-700 dark:text-gray-300 leading-relaxed">
-              I&apos;m a student developer who likes {em("building things on the internet")}. Most of what I work on is software, AI, and random ideas that turn into projects. I spend a lot of time experimenting with new tech, building apps, and going to hackathons. Lately I&apos;ve been really {em("interested in AI, fintech, and tools that solve real problems")}. A lot of my projects start as random ideas that I just get curious about and decide to build. I like figuring things out as I go and seeing how far an idea can turn into something {em("real")}.
-            </p>
+            <AboutText text={content.about} />
           </FadeIn>
 
           {/* projects */}
@@ -100,7 +80,7 @@ export default function Home() {
               projects
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {projects.map((project, index) => (
+              {content.projects.map((project, index) => (
                 <ProjectCard key={index} {...project} />
               ))}
             </div>
