@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
+import { track } from "@vercel/analytics"
 
 const CMD = "ssh sup@sup.rishaan.cc"
 const TYPE_SPEED = 65
@@ -60,6 +61,7 @@ export default function SshCallout() {
   const copy = () => {
     navigator.clipboard.writeText(CMD)
     setCopied(true)
+    track("ssh_copy")
     setTimeout(() => setCopied(false), 2000)
   }
 

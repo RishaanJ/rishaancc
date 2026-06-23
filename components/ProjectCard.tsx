@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { GlobeIcon, GitHubLogoIcon } from "@radix-ui/react-icons"
+import { track } from "@vercel/analytics"
 
 export default function ProjectCard({
   title,
@@ -52,6 +53,7 @@ export default function ProjectCard({
                 href={github}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track("project_click", { project: title, link: "github" })}
                 className="hover:text-black dark:hover:text-white transition-colors"
                 whileHover={{ scale: 1.2 }}
               >
@@ -63,6 +65,7 @@ export default function ProjectCard({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track("project_click", { project: title, link: "url" })}
                 className="hover:text-black dark:hover:text-white transition-colors"
                 whileHover={{ scale: 1.2 }}
               >

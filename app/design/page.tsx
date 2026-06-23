@@ -37,6 +37,7 @@ const contentItems: ContentItem[] = [
 
   // Sites — paste a URL + label
   { type: "site", url: "https://siddz.com/", label: "Siddharth Meena's Portfolio", description: "It just feels so right and good" },
+  {type: "site", url: "https://sladetechnologies.com/systems/st-1", label: "Slade Technologies", description: "aboslute beaut of a website"},
 
   // Images — paste a path or URL
   // { type: "image", src: "/your-image.jpg", alt: "description" },

@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react"
 import { Sun, Moon, Monitor } from "lucide-react"
+import { track } from "@vercel/analytics"
 
 const options = [
   { value: "light", icon: Sun },
@@ -19,6 +20,8 @@ export default function ThemeToggle() {
 
   const switchTheme = (value: string, e: React.MouseEvent) => {
     if (value === theme) return
+
+    track("theme_switch", { theme: value })
 
     const x = e.clientX
     const y = e.clientY

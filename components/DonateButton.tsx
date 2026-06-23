@@ -1,4 +1,7 @@
+"use client"
+
 import { ArrowRightIcon } from "@radix-ui/react-icons"
+import { track } from "@vercel/analytics"
 
 export default function DonateButton() {
   return (
@@ -6,6 +9,7 @@ export default function DonateButton() {
       href="https://ko-fi.com/rishaanjain"
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => track("donate_click")}
       className="font-[family-name:var(--font-geist-sans)] text-xs font-medium bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-full hover:opacity-80 transition-opacity shrink-0 flex items-center gap-1"
     >
       give money <ArrowRightIcon className="w-3 h-3" />
