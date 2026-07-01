@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import type { SiteContent, SectionKey } from "@/lib/content/types"
+import HeroGradient from "@/components/HeroGradient"
+import { GridPattern } from "@/components/ui/grid-pattern"
 import ProjectsForm from "./sections/ProjectsForm"
 import AboutForm from "./sections/AboutForm"
 import SubtitleForm from "./sections/SubtitleForm"
@@ -32,56 +34,64 @@ export default function AdminClient({ initial }: { initial: SiteContent }) {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10">
-      <header className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-[-0.04em]">admin</h1>
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-            edit the live site. changes appear within ~30s.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <a href="/" target="_blank" className="text-xs text-gray-500 hover:text-black dark:hover:text-white">view site →</a>
-          <button onClick={logout} className="text-xs text-gray-500 hover:text-black dark:hover:text-white">log out</button>
-        </div>
-      </header>
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-black">
+      <GridPattern
+        width={40}
+        height={40}
+        className="absolute inset-0 h-full w-full fill-transparent stroke-gray-200/30 dark:stroke-gray-800/30 [mask-image:radial-gradient(ellipse_at_top,white_20%,transparent_70%)]"
+      />
+      <HeroGradient />
+      <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 py-10">
+        <header className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-[-0.04em]">admin</h1>
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+              edit the live site. changes appear within ~30s.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <a href="/" target="_blank" className="text-xs text-gray-500 hover:text-black dark:hover:text-white">view site →</a>
+            <button onClick={logout} className="text-xs text-gray-500 hover:text-black dark:hover:text-white">log out</button>
+          </div>
+        </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-6">
-        <nav className="flex sm:flex-col gap-1 overflow-x-auto">
-          {SECTIONS.map((s) => (
-            <button
-              key={s.key}
-              onClick={() => setActive(s.key)}
-              className={`text-left text-sm px-3 py-1.5 rounded-md transition-colors ${
-                active === s.key
-                  ? "bg-gray-100 dark:bg-gray-900 text-black dark:text-white"
-                  : "text-gray-500 hover:text-black dark:hover:text-white"
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </nav>
+        <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-6">
+          <nav className="flex sm:flex-col gap-1 overflow-x-auto">
+            {SECTIONS.map((s) => (
+              <button
+                key={s.key}
+                onClick={() => setActive(s.key)}
+                className={`text-left text-sm px-3 py-1.5 rounded-md transition-colors ${
+                  active === s.key
+                    ? "bg-gray-100 dark:bg-gray-900 text-black dark:text-white"
+                    : "text-gray-500 hover:text-black dark:hover:text-white"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </nav>
 
-        <div>
-          {active === "projects" && (
-            <ProjectsForm value={content.projects} onSaved={(v) => update("projects", v)} />
-          )}
-          {active === "about" && (
-            <AboutForm value={content.about} onSaved={(v) => update("about", v)} />
-          )}
-          {active === "subtitle" && (
-            <SubtitleForm value={content.subtitle} onSaved={(v) => update("subtitle", v)} />
-          )}
-          {active === "greeting" && (
-            <GreetingForm value={content.greeting} onSaved={(v) => update("greeting", v)} />
-          )}
-          {active === "stack" && (
-            <StackForm value={content.stack} onSaved={(v) => update("stack", v)} />
-          )}
-          {active === "design" && (
-            <DesignForm value={content.design} onSaved={(v) => update("design", v)} />
-          )}
+          <div>
+            {active === "projects" && (
+              <ProjectsForm value={content.projects} onSaved={(v) => update("projects", v)} />
+            )}
+            {active === "about" && (
+              <AboutForm value={content.about} onSaved={(v) => update("about", v)} />
+            )}
+            {active === "subtitle" && (
+              <SubtitleForm value={content.subtitle} onSaved={(v) => update("subtitle", v)} />
+            )}
+            {active === "greeting" && (
+              <GreetingForm value={content.greeting} onSaved={(v) => update("greeting", v)} />
+            )}
+            {active === "stack" && (
+              <StackForm value={content.stack} onSaved={(v) => update("stack", v)} />
+            )}
+            {active === "design" && (
+              <DesignForm value={content.design} onSaved={(v) => update("design", v)} />
+            )}
+          </div>
         </div>
       </div>
     </div>

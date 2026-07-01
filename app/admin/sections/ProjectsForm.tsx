@@ -2,7 +2,17 @@
 
 import { useState } from "react"
 import type { Project } from "@/lib/content/types"
-import { Button, FieldLabel, Row, SaveBar, TextArea, TextInput, useSaver } from "./ui"
+import {
+  Button,
+  FieldLabel,
+  ImagePreview,
+  Row,
+  SaveBar,
+  TextArea,
+  TextInput,
+  useAddFlash,
+  useSaver,
+} from "./ui"
 
 export default function ProjectsForm({
   value,
@@ -14,6 +24,7 @@ export default function ProjectsForm({
   const [items, setItems] = useState<Project[]>(value)
   const [dirty, setDirty] = useState(false)
   const { state, error, save } = useSaver("projects")
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(items.length)
 
   function update(i: number, patch: Partial<Project>) {
     setItems((arr) => arr.map((p, idx) => (idx === i ? { ...p, ...patch } : p)))
@@ -34,6 +45,7 @@ export default function ProjectsForm({
     setDirty(true)
   }
   function add() {
+    markPendingFlash(items.length)
     setItems((arr) => [...arr, { title: "", description: "", image: "/" }])
     setDirty(true)
   }
@@ -52,14 +64,13 @@ export default function ProjectsForm({
 
   return (
     <section className="flex flex-col gap-4">
-      <header className="flex items-center justify-between">
+      <header>
         <h2 className="text-lg font-semibold tracking-[-0.03em]">projects</h2>
-        <Button variant="ghost" onClick={add}>+ add</Button>
       </header>
 
       <div className="flex flex-col gap-3">
         {items.map((p, i) => (
-          <Row key={i}>
+          <Row key={i} flashing={flashIndex === i} rowRef={setRef(i)}>
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-400">#{i + 1}</span>
               <div className="flex items-center gap-2">
@@ -75,7 +86,15 @@ export default function ProjectsForm({
               </div>
               <div className="flex flex-col gap-1">
                 <FieldLabel>image (path or url)</FieldLabel>
-                <TextInput value={p.image} maxLength={500} onChange={(e) => update(i, { image: e.target.value })} placeholder="/foo.png or https://…" />
+                <div className="flex items-center gap-2">
+                  <ImagePreview src={p.image} alt={p.title} size={56} />
+                  <TextInput
+                    value={p.image}
+                    maxLength={500}
+                    onChange={(e) => update(i, { image: e.target.value })}
+                    placeholder="/foo.png or https://…"
+                  />
+                </div>
               </div>
             </div>
             <div className="flex flex-col gap-1">
@@ -89,6 +108,10 @@ export default function ProjectsForm({
           </Row>
         ))}
       </div>
+
+      <Button variant="outline" onClick={add} className="w-full py-2.5">
+        + add project
+      </Button>
 
       <SaveBar state={state} error={error} onSave={onSave} dirty={dirty} />
     </section>

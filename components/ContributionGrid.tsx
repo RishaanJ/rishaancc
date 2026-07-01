@@ -36,10 +36,11 @@ interface Contribution {
   level: 0 | 1 | 2 | 3 | 4
 }
 
-async function fetchContributions(): Promise<Contribution[]> {
+// Fetch a specific calendar year, not the rolling "last 365 days"
+async function fetchContributions(year: number): Promise<Contribution[]> {
   try {
     const res = await fetch(
-      "https://github-contributions-api.jogruber.de/v4/RishaanJ?y=last",
+      `https://github-contributions-api.jogruber.de/v4/RishaanJ?y=${year}`,
       { next: { revalidate: 3600 } }
     )
     const data = await res.json()
@@ -49,19 +50,25 @@ async function fetchContributions(): Promise<Contribution[]> {
   }
 }
 
-// Build a 53-week grid (columns) × 7 days (rows), Sunday-first
-function buildGrid(contributions: Contribution[]) {
+// Local date -> "YYYY-MM-DD" (avoids the UTC off-by-one from toISOString)
+function fmt(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate()
+  ).padStart(2, "0")}`
+}
+
+// Build weeks (columns) × 7 days (rows), Sunday-first, spanning ALL of `year`
+function buildGrid(contributions: Contribution[], year: number) {
   const map: Record<string, Contribution> = {}
   for (const c of contributions) map[c.date] = c
 
-  // Start from the Sunday on or before the first contribution date
-  const today = new Date()
-  const end = new Date(today)
-  // go to the end of the current week (Saturday)
-  end.setDate(end.getDate() + (6 - end.getDay()))
+  // Sunday on or before Jan 1
+  const start = new Date(year, 0, 1)
+  start.setDate(start.getDate() - start.getDay())
 
-  const start = new Date(end)
-  start.setDate(start.getDate() - 52 * 7 - end.getDay())
+  // Saturday on or after Dec 31
+  const end = new Date(year, 11, 31)
+  end.setDate(end.getDate() + (6 - end.getDay()))
 
   const weeks: (Contribution | null)[][] = []
   const cur = new Date(start)
@@ -69,8 +76,7 @@ function buildGrid(contributions: Contribution[]) {
   while (cur <= end) {
     const week: (Contribution | null)[] = []
     for (let d = 0; d < 7; d++) {
-      const dateStr = cur.toISOString().slice(0, 10)
-      week.push(map[dateStr] ?? null)
+      week.push(map[fmt(cur)] ?? null)
       cur.setDate(cur.getDate() + 1)
     }
     weeks.push(week)
@@ -96,15 +102,19 @@ const LEVEL_DARK = [
 ]
 
 export default async function ContributionGrid() {
-  const [contributions, lastCommit] = await Promise.all([fetchContributions(), fetchLastCommit()])
+  const year = new Date().getFullYear()
+  const [contributions, lastCommit] = await Promise.all([
+    fetchContributions(year),
+    fetchLastCommit(),
+  ])
   const total = contributions.reduce((s, c) => s + c.count, 0)
-  const weeks = buildGrid(contributions)
+  const weeks = buildGrid(contributions, year)
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <p className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600">
-          {total} contributions in the last year
+          {total} contributions in {year}
         </p>
         <a
           href="https://github.com/RishaanJ"

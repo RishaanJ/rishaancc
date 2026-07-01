@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Button, SaveBar, TextInput, useSaver } from "./ui"
+import { Button, SaveBar, TextInput, useAddFlash, useSaver } from "./ui"
 
 export default function SubtitleForm({
   value,
@@ -13,6 +13,7 @@ export default function SubtitleForm({
   const [lines, setLines] = useState<string[]>(value)
   const [dirty, setDirty] = useState(false)
   const { state, error, save } = useSaver("subtitle")
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(lines.length)
 
   function update(i: number, v: string) {
     setLines((arr) => arr.map((l, idx) => (idx === i ? v : l)))
@@ -23,6 +24,7 @@ export default function SubtitleForm({
     setDirty(true)
   }
   function add() {
+    markPendingFlash(lines.length)
     setLines((arr) => [...arr, ""])
     setDirty(true)
   }
@@ -48,14 +50,17 @@ export default function SubtitleForm({
 
   return (
     <section className="flex flex-col gap-3">
-      <header className="flex items-center justify-between">
+      <header>
         <h2 className="text-lg font-semibold tracking-[-0.03em]">rotating subtitle</h2>
-        <Button variant="ghost" onClick={add}>+ add</Button>
       </header>
 
       <div className="flex flex-col gap-2">
         {lines.map((l, i) => (
-          <div key={i} className="flex items-center gap-2">
+          <div
+            key={i}
+            ref={setRef(i)}
+            className={`flex items-center gap-2 rounded-md p-1 ${flashIndex === i ? "animate-flash-new" : ""}`}
+          >
             <TextInput value={l} maxLength={200} onChange={(e) => update(i, e.target.value)} />
             <Button variant="ghost" onClick={() => move(i, -1)} disabled={i === 0}>↑</Button>
             <Button variant="ghost" onClick={() => move(i, 1)} disabled={i === lines.length - 1}>↓</Button>
@@ -63,6 +68,10 @@ export default function SubtitleForm({
           </div>
         ))}
       </div>
+
+      <Button variant="outline" onClick={add} className="w-full py-2.5">
+        + add line
+      </Button>
 
       <SaveBar state={state} error={error} onSave={onSave} dirty={dirty} />
     </section>

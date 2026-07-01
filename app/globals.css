@@ -253,6 +253,22 @@
 .delay-4 { animation-delay: 0.27s; }
 .delay-5 { animation-delay: 0.34s; }
 
+@keyframes flash-new {
+  0% {
+    background: rgba(249, 115, 22, 0.16);
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.55), 0 12px 30px -10px rgba(249, 115, 22, 0.35);
+    transform: scale(1.005);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 0 transparent;
+    transform: scale(1);
+  }
+}
+.animate-flash-new {
+  animation: flash-new 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

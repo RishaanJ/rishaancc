@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import type { StackCategory } from "@/lib/content/types"
-import { Button, FieldLabel, Row, SaveBar, TextInput, useSaver } from "./ui"
+import { Button, FieldLabel, Row, SaveBar, TextInput, useAddFlash, useSaver } from "./ui"
 
 export default function StackForm({
   value,
@@ -14,6 +14,7 @@ export default function StackForm({
   const [cats, setCats] = useState<StackCategory[]>(value)
   const [dirty, setDirty] = useState(false)
   const { state, error, save } = useSaver("stack")
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(cats.length)
 
   function updateCat(i: number, patch: Partial<StackCategory>) {
     setCats((a) => a.map((c, idx) => (idx === i ? { ...c, ...patch } : c)))
@@ -24,6 +25,7 @@ export default function StackForm({
     setDirty(true)
   }
   function addCat() {
+    markPendingFlash(cats.length)
     setCats((a) => [...a, { category: "New", items: [] }])
     setDirty(true)
   }
@@ -66,14 +68,13 @@ export default function StackForm({
 
   return (
     <section className="flex flex-col gap-4">
-      <header className="flex items-center justify-between">
+      <header>
         <h2 className="text-lg font-semibold tracking-[-0.03em]">stack</h2>
-        <Button variant="ghost" onClick={addCat}>+ category</Button>
       </header>
 
       <div className="flex flex-col gap-3">
         {cats.map((c, ci) => (
-          <Row key={ci}>
+          <Row key={ci} flashing={flashIndex === ci} rowRef={setRef(ci)}>
             <div className="flex items-center justify-between gap-2">
               <div className="flex-1">
                 <FieldLabel>category</FieldLabel>
@@ -104,11 +105,17 @@ export default function StackForm({
                   <Button variant="danger" onClick={() => removeItem(ci, ii)}>×</Button>
                 </div>
               ))}
-              <Button variant="ghost" onClick={() => addItem(ci)}>+ item</Button>
+              <Button variant="outline" onClick={() => addItem(ci)} className="w-full py-1.5">
+                + add item
+              </Button>
             </div>
           </Row>
         ))}
       </div>
+
+      <Button variant="outline" onClick={addCat} className="w-full py-2.5">
+        + add category
+      </Button>
 
       <SaveBar state={state} error={error} onSave={onSave} dirty={dirty} />
     </section>

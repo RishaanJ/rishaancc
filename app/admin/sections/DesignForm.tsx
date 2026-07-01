@@ -9,7 +9,17 @@ import type {
   DesignFont,
   DesignSurprise,
 } from "@/lib/content/types"
-import { Button, FieldLabel, Row, SaveBar, TextArea, TextInput, useSaver } from "./ui"
+import {
+  Button,
+  FieldLabel,
+  ImagePreview,
+  Row,
+  SaveBar,
+  TextArea,
+  TextInput,
+  useAddFlash,
+  useSaver,
+} from "./ui"
 
 export default function DesignForm({
   value,
@@ -49,11 +59,10 @@ export default function DesignForm({
   )
 }
 
-function SectionHeader({ label, onAdd }: { label: string; onAdd?: () => void }) {
+function SectionHeader({ label }: { label: string }) {
   return (
     <div className="flex items-center justify-between">
       <h3 className="text-sm font-medium text-black dark:text-white">{label}</h3>
-      {onAdd && <Button variant="ghost" onClick={onAdd}>+ add</Button>}
     </div>
   )
 }
@@ -65,14 +74,19 @@ function SurpriseSection({
   surprises: DesignSurprise[]
   setSurprises: (v: DesignSurprise[]) => void
 }) {
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(surprises.length)
   function up(i: number, p: Partial<DesignSurprise>) {
     setSurprises(surprises.map((s, idx) => (idx === i ? { ...s, ...p } : s)))
   }
+  function add() {
+    markPendingFlash(surprises.length)
+    setSurprises([...surprises, { text: "", sub: "" }])
+  }
   return (
     <div className="flex flex-col gap-3">
-      <SectionHeader label="easter egg surprises" onAdd={() => setSurprises([...surprises, { text: "", sub: "" }])} />
+      <SectionHeader label="easter egg surprises" />
       {surprises.map((s, i) => (
-        <Row key={i}>
+        <Row key={i} flashing={flashIndex === i} rowRef={setRef(i)}>
           <div className="flex flex-col gap-2">
             <FieldLabel>text (use \n for line breaks)</FieldLabel>
             <TextArea
@@ -87,6 +101,7 @@ function SurpriseSection({
           <Button variant="danger" onClick={() => setSurprises(surprises.filter((_, idx) => idx !== i))}>remove</Button>
         </Row>
       ))}
+      <Button variant="outline" onClick={add} className="w-full py-2">+ add surprise</Button>
     </div>
   )
 }
@@ -98,14 +113,19 @@ function BeliefsSection({
   beliefs: DesignBelief[]
   setBeliefs: (v: DesignBelief[]) => void
 }) {
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(beliefs.length)
   function up(i: number, p: Partial<DesignBelief>) {
     setBeliefs(beliefs.map((b, idx) => (idx === i ? { ...b, ...p } : b)))
   }
+  function add() {
+    markPendingFlash(beliefs.length)
+    setBeliefs([...beliefs, { text: "", desc: "" }])
+  }
   return (
     <div className="flex flex-col gap-3">
-      <SectionHeader label="design beliefs" onAdd={() => setBeliefs([...beliefs, { text: "", desc: "" }])} />
+      <SectionHeader label="design beliefs" />
       {beliefs.map((b, i) => (
-        <Row key={i}>
+        <Row key={i} flashing={flashIndex === i} rowRef={setRef(i)}>
           <FieldLabel>statement</FieldLabel>
           <TextInput value={b.text} maxLength={200} onChange={(e) => up(i, { text: e.target.value })} />
           <FieldLabel>description</FieldLabel>
@@ -113,6 +133,7 @@ function BeliefsSection({
           <Button variant="danger" onClick={() => setBeliefs(beliefs.filter((_, idx) => idx !== i))}>remove</Button>
         </Row>
       ))}
+      <Button variant="outline" onClick={add} className="w-full py-2">+ add belief</Button>
     </div>
   )
 }
@@ -124,14 +145,23 @@ function AestheticsSection({
   aesthetics: DesignAesthetic[]
   setAesthetics: (v: DesignAesthetic[]) => void
 }) {
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(aesthetics.length)
   function up(i: number, p: Partial<DesignAesthetic>) {
     setAesthetics(aesthetics.map((a, idx) => (idx === i ? { ...a, ...p } : a)))
   }
+  function add() {
+    markPendingFlash(aesthetics.length)
+    setAesthetics([...aesthetics, { label: "", tag: "" }])
+  }
   return (
     <div className="flex flex-col gap-3">
-      <SectionHeader label="aesthetics i love" onAdd={() => setAesthetics([...aesthetics, { label: "", tag: "" }])} />
+      <SectionHeader label="aesthetics i love" />
       {aesthetics.map((a, i) => (
-        <div key={i} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-end">
+        <div
+          key={i}
+          ref={setRef(i)}
+          className={`grid grid-cols-[1fr_1fr_auto] gap-2 items-end rounded-md p-1 ${flashIndex === i ? "animate-flash-new" : ""}`}
+        >
           <div className="flex flex-col gap-1">
             <FieldLabel>label</FieldLabel>
             <TextInput value={a.label} maxLength={60} onChange={(e) => up(i, { label: e.target.value })} />
@@ -143,6 +173,7 @@ function AestheticsSection({
           <Button variant="danger" onClick={() => setAesthetics(aesthetics.filter((_, idx) => idx !== i))}>×</Button>
         </div>
       ))}
+      <Button variant="outline" onClick={add} className="w-full py-2">+ add aesthetic</Button>
     </div>
   )
 }
@@ -154,17 +185,19 @@ function FontsSection({
   fonts: DesignFont[]
   setFonts: (v: DesignFont[]) => void
 }) {
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(fonts.length)
   function up(i: number, p: Partial<DesignFont>) {
     setFonts(fonts.map((f, idx) => (idx === i ? { ...f, ...p } : f)))
   }
+  function add() {
+    markPendingFlash(fonts.length)
+    setFonts([...fonts, { name: "", family: "", italic: false }])
+  }
   return (
     <div className="flex flex-col gap-3">
-      <SectionHeader
-        label="favorite fonts"
-        onAdd={() => setFonts([...fonts, { name: "", family: "", italic: false }])}
-      />
+      <SectionHeader label="favorite fonts" />
       {fonts.map((f, i) => (
-        <Row key={i}>
+        <Row key={i} flashing={flashIndex === i} rowRef={setRef(i)}>
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto_auto] gap-2 items-end">
             <div className="flex flex-col gap-1">
               <FieldLabel>name</FieldLabel>
@@ -184,8 +217,17 @@ function FontsSection({
             </label>
             <Button variant="danger" onClick={() => setFonts(fonts.filter((_, idx) => idx !== i))}>×</Button>
           </div>
+          {f.family && (
+            <div
+              className="text-2xl text-black dark:text-white pt-1"
+              style={{ fontFamily: f.family, fontStyle: f.italic ? "italic" : "normal" }}
+            >
+              {f.name || "Aa"}
+            </div>
+          )}
         </Row>
       ))}
+      <Button variant="outline" onClick={add} className="w-full py-2">+ add font</Button>
     </div>
   )
 }
@@ -197,6 +239,7 @@ function ItemsSection({
   items: DesignContentItem[]
   setItems: (v: DesignContentItem[]) => void
 }) {
+  const { flashIndex, markPendingFlash, setRef } = useAddFlash(items.length)
   function up(i: number, patch: Partial<DesignContentItem>) {
     setItems(items.map((it, idx) => (idx === i ? ({ ...it, ...patch } as DesignContentItem) : it)))
   }
@@ -218,14 +261,15 @@ function ItemsSection({
     }
     setItems(items.map((it, idx) => (idx === i ? next : it)))
   }
+  function add() {
+    markPendingFlash(items.length)
+    setItems([...items, { type: "video", url: "" }])
+  }
   return (
     <div className="flex flex-col gap-3">
-      <SectionHeader
-        label="content bento items"
-        onAdd={() => setItems([...items, { type: "video", url: "" }])}
-      />
+      <SectionHeader label="content bento items" />
       {items.map((it, i) => (
-        <Row key={i}>
+        <Row key={i} flashing={flashIndex === i} rowRef={setRef(i)}>
           <div className="flex items-center gap-3">
             <select
               value={it.type}
@@ -243,9 +287,12 @@ function ItemsSection({
           </div>
 
           {it.type === "video" && (
-            <div className="flex flex-col gap-1">
-              <FieldLabel>youtube url</FieldLabel>
-              <TextInput value={it.url} maxLength={500} onChange={(e) => up(i, { url: e.target.value })} />
+            <div className="flex items-start gap-3">
+              <ImagePreview src={videoThumb(it.url)} size={72} />
+              <div className="flex-1 flex flex-col gap-1">
+                <FieldLabel>youtube url</FieldLabel>
+                <TextInput value={it.url} maxLength={500} onChange={(e) => up(i, { url: e.target.value })} />
+              </div>
             </div>
           )}
           {it.type === "site" && (
@@ -265,35 +312,47 @@ function ItemsSection({
             </>
           )}
           {it.type === "image" && (
-            <>
-              <div className="flex flex-col gap-1">
-                <FieldLabel>src (path or url)</FieldLabel>
-                <TextInput value={it.src} maxLength={500} onChange={(e) => up(i, { src: e.target.value })} />
+            <div className="flex items-start gap-3">
+              <ImagePreview src={it.src} size={72} alt={it.alt} />
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="flex flex-col gap-1">
+                  <FieldLabel>src (path or url)</FieldLabel>
+                  <TextInput value={it.src} maxLength={500} onChange={(e) => up(i, { src: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <FieldLabel>alt (optional)</FieldLabel>
+                  <TextInput value={it.alt ?? ""} maxLength={120} onChange={(e) => up(i, { alt: e.target.value })} />
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <FieldLabel>alt (optional)</FieldLabel>
-                <TextInput value={it.alt ?? ""} maxLength={120} onChange={(e) => up(i, { alt: e.target.value })} />
-              </div>
-            </>
+            </div>
           )}
           {it.type === "channel" && (
-            <>
-              <div className="flex flex-col gap-1">
-                <FieldLabel>url</FieldLabel>
-                <TextInput value={it.url} maxLength={500} onChange={(e) => up(i, { url: e.target.value })} />
+            <div className="flex items-start gap-3">
+              <ImagePreview src={it.image} size={72} alt={it.name} />
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="flex flex-col gap-1">
+                  <FieldLabel>url</FieldLabel>
+                  <TextInput value={it.url} maxLength={500} onChange={(e) => up(i, { url: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <FieldLabel>name</FieldLabel>
+                  <TextInput value={it.name} maxLength={80} onChange={(e) => up(i, { name: e.target.value })} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <FieldLabel>image url</FieldLabel>
+                  <TextInput value={it.image} maxLength={500} onChange={(e) => up(i, { image: e.target.value })} />
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <FieldLabel>name</FieldLabel>
-                <TextInput value={it.name} maxLength={80} onChange={(e) => up(i, { name: e.target.value })} />
-              </div>
-              <div className="flex flex-col gap-1">
-                <FieldLabel>image url</FieldLabel>
-                <TextInput value={it.image} maxLength={500} onChange={(e) => up(i, { image: e.target.value })} />
-              </div>
-            </>
+            </div>
           )}
         </Row>
       ))}
+      <Button variant="outline" onClick={add} className="w-full py-2">+ add item</Button>
     </div>
   )
+}
+
+function videoThumb(url: string): string {
+  const match = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/)
+  return match ? `https://img.youtube.com/vi/${match[1]}/mqdefault.jpg` : ""
 }
