@@ -1,4 +1,4 @@
-import ProjectCard from "@/components/ProjectCard"
+import ProjectsGrid from "@/components/ProjectsGrid"
 import Link from "next/link"
 import DonateButton from "@/components/DonateButton"
 import { GridPattern } from "@/components/ui/grid-pattern"
@@ -79,11 +79,7 @@ export default async function Home() {
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
               projects
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {content.projects.map((project, index) => (
-                <ProjectCard key={index} {...project} />
-              ))}
-            </div>
+            <ProjectsGrid projects={content.projects} />
           </FadeIn>
 
           {/* visitor counter */}

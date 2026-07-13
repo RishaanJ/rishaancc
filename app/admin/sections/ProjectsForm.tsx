@@ -46,7 +46,7 @@ export default function ProjectsForm({
   }
   function add() {
     markPendingFlash(items.length)
-    setItems((arr) => [...arr, { title: "", description: "", image: "/" }])
+    setItems((arr) => [...arr, { title: "", description: "", image: "" }])
     setDirty(true)
   }
 
