@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ComposedChart, Bar, Line, XAxis, ResponsiveContainer, Cell } from "recharts"
 import Link from "next/link"
 
 const RAW = [
@@ -20,14 +19,62 @@ const RAW = [
   { o: 65, h: 69, l: 62, c: 68 },
 ]
 
-const data = RAW.map((d, i) => ({
-  ...d,
-  base: d.l,
-  bodyBase: Math.min(d.o, d.c),
-  bodyHeight: Math.abs(d.c - d.o) || 0.5,
-  up: d.c >= d.o,
-  label: `W${i + 1}`,
-}))
+const LOW = Math.min(...RAW.map(d => d.l))
+const HIGH = Math.max(...RAW.map(d => d.h))
+
+const CHART_H = 60
+const PAD = 3
+/** Body width as a fraction of each candle's slot — the rest is breathing room. */
+const BODY_W = 0.32
+
+const UP = "#22c55e"
+const DOWN = "#ef4444"
+
+/**
+ * No viewBox, so SVG user units are CSS pixels: y values stay in px while x uses
+ * percentages. That keeps wicks a crisp 1px at any container width.
+ */
+function scaleY(value: number) {
+  return PAD + ((HIGH - value) / (HIGH - LOW)) * (CHART_H - PAD * 2)
+}
+
+function Candles() {
+  const slot = 100 / RAW.length
+
+  return (
+    <svg width="100%" height={CHART_H} aria-hidden>
+      {RAW.map((d, i) => {
+        const color = d.c >= d.o ? UP : DOWN
+        const top = scaleY(Math.max(d.o, d.c))
+        const bottom = scaleY(Math.min(d.o, d.c))
+
+        return (
+          <g key={i}>
+            {/* wick */}
+            <line
+              x1={`${(i + 0.5) * slot}%`}
+              x2={`${(i + 0.5) * slot}%`}
+              y1={scaleY(d.h)}
+              y2={scaleY(d.l)}
+              stroke={color}
+              strokeWidth={1}
+              opacity={0.65}
+            />
+            {/* body — floored so a doji still reads as a mark, not a gap */}
+            <rect
+              x={`${(i + (1 - BODY_W) / 2) * slot}%`}
+              width={`${BODY_W * slot}%`}
+              y={top}
+              height={Math.max(bottom - top, 1.5)}
+              rx={0.5}
+              fill={color}
+            />
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
 
 const fundamentals = [
   { label: "Sector",        value: "Software / AI" },
@@ -38,15 +85,52 @@ const fundamentals = [
   { label: "For Hire",      value: "immediately" },
 ]
 
+/** Smaller sibling of the arrow on /hire — curves down from the nudge to the pill. */
+function NudgeArrow() {
+  return (
+    <svg
+      width="28"
+      height="30"
+      viewBox="0 0 28 30"
+      fill="none"
+      aria-hidden
+      className="shrink-0 text-black dark:text-white"
+    >
+      <motion.path
+        d="M2 5C6 2 13 3 16 9C18 13 19 17 19 22"
+        stroke="currentColor"
+        strokeWidth={1.75}
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ delay: 0.25, duration: 0.4, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M13 16L19 23L25 16"
+        stroke="currentColor"
+        strokeWidth={1.75}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ delay: 0.6, duration: 0.2, ease: "easeOut" }}
+      />
+    </svg>
+  )
+}
+
 const analysts = [
   { firm: "Y Combinator",   rating: "Strong Buy",  note: "ships fast" },
   { firm: "Sequoia",        rating: "Buy",         note: "too many ideas" },
   { firm: "His Mom",        rating: "Strong Buy",  note: "very smart boy" },
 ]
 
+const NUDGE_SEEN = "rish-ticker-seen"
+
 export default function StockTicker() {
   const [open, setOpen] = useState(false)
   const [price, setPrice] = useState(68.42)
+  const [nudge, setNudge] = useState(false)
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -54,6 +138,28 @@ export default function StockTicker() {
     }, 2200)
     return () => clearInterval(id)
   }, [])
+
+  // First visit only: let the page settle, point out the pill, then get out of
+  // the way on its own if it's ignored.
+  useEffect(() => {
+    if (localStorage.getItem(NUDGE_SEEN)) return
+
+    const show = setTimeout(() => setNudge(true), 1800)
+    const hide = setTimeout(() => {
+      setNudge(false)
+      localStorage.setItem(NUDGE_SEEN, "1")
+    }, 11000)
+
+    return () => {
+      clearTimeout(show)
+      clearTimeout(hide)
+    }
+  }, [])
+
+  const dismissNudge = () => {
+    setNudge(false)
+    localStorage.setItem(NUDGE_SEEN, "1")
+  }
 
   const change = (price - 68.42).toFixed(2)
   const pct = (((price - 68.42) / 68.42) * 100).toFixed(2)
@@ -85,19 +191,8 @@ export default function StockTicker() {
             </div>
 
             {/* Chart */}
-            <div className="h-[60px] -mx-1 my-3">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={data} barCategoryGap="20%">
-                  <XAxis dataKey="label" hide />
-                  <Line type="monotone" dataKey="h" dot={false} stroke="transparent" />
-                  <Bar dataKey="base" stackId="c" fill="transparent" stroke="none" />
-                  <Bar dataKey="bodyHeight" stackId="c" radius={[1,1,1,1]}>
-                    {data.map((d, i) => (
-                      <Cell key={i} fill={d.up ? "#22c55e" : "#ef4444"} />
-                    ))}
-                  </Bar>
-                </ComposedChart>
-              </ResponsiveContainer>
+            <div className="-mx-1 my-3">
+              <Candles />
             </div>
 
             {/* Fundamentals */}
@@ -147,13 +242,38 @@ export default function StockTicker() {
         )}
       </AnimatePresence>
 
+      {/* First-visit nudge */}
+      <AnimatePresence>
+        {nudge && !open && (
+          <motion.button
+            onClick={dismissNudge}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            aria-label="dismiss"
+            className="flex items-start gap-0.5 pr-6 -mb-1 cursor-pointer"
+          >
+            <span className="font-[family-name:var(--font-caveat)] text-base sm:text-lg leading-none text-black dark:text-white -rotate-3 whitespace-nowrap">
+              psst — this is my resume
+            </span>
+            <NudgeArrow />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       {/* Pill */}
       <motion.button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => {
+          setOpen(o => !o)
+          dismissNudge()
+        }}
         className="flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-black px-3 py-1.5 shadow-sm cursor-pointer"
         whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.97 }}
       >
+        <span className="font-[family-name:var(--font-geist-sans)] text-xs text-gray-400 dark:text-gray-600">hire me</span>
+        <span className="w-px h-3 bg-gray-200 dark:bg-gray-800" />
         <span className="font-[family-name:var(--font-geist-sans)] text-xs font-medium text-black dark:text-white">$RISH</span>
         <span className={`font-[family-name:var(--font-geist-sans)] text-xs tabular-nums ${up ? "text-green-500" : "text-red-500"}`}>
           {up ? "▲" : "▼"}{Math.abs(parseFloat(pct))}%

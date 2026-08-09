@@ -5,10 +5,49 @@ import { motion, AnimatePresence } from "framer-motion"
 import { CheckIcon } from "@radix-ui/react-icons"
 import Link from "next/link"
 
-const ORDER_TYPES = ["Full-time", "Internship", "Contract", "Collab"]
+const OFFER_TYPES = ["Full-time", "Internship", "Question", "Collab"]
+
+/**
+ * Marker-style arrow curving down into the contact card. Drawn in two strokes —
+ * shaft then head — so the head lands after the shaft finishes, the way you'd
+ * actually draw it. The wobble in the shaft is deliberate; a clean bezier reads
+ * as vector art rather than something scrawled on.
+ */
+function ScribbleArrow() {
+  return (
+    <svg
+      width="44"
+      height="42"
+      viewBox="0 0 44 42"
+      fill="none"
+      aria-hidden
+      className="shrink-0 text-red-500"
+    >
+      <motion.path
+        d="M2 8C9 2 19 3 25 11C29 16 32 23 33 31"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ delay: 0.6, duration: 0.5, ease: "easeInOut" }}
+      />
+      <motion.path
+        d="M26 24L33 32L40 24"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ delay: 1.05, duration: 0.22, ease: "easeOut" }}
+      />
+    </svg>
+  )
+}
 
 export default function HirePage() {
-  const [orderType, setOrderType] = useState("Full-time")
+  const [offerType, setOfferType] = useState("Full-time")
   const [confirmed, setConfirmed] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -48,14 +87,14 @@ export default function HirePage() {
 
               {/* Order type */}
               <div className="p-5 border-b border-gray-100 dark:border-gray-800">
-                <p className="text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-3">Order Type</p>
+                <p className="text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-3">Offer Type</p>
                 <div className="grid grid-cols-2 gap-2">
-                  {ORDER_TYPES.map(t => (
+                  {OFFER_TYPES.map(t => (
                     <button
                       key={t}
-                      onClick={() => setOrderType(t)}
+                      onClick={() => setOfferType(t)}
                       className={`py-2 rounded-lg text-xs font-medium transition-all ${
-                        orderType === t
+                        offerType === t
                           ? "bg-black dark:bg-white text-white dark:text-black"
                           : "bg-gray-100 dark:bg-gray-900 text-gray-500 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-800"
                       }`}
@@ -72,8 +111,8 @@ export default function HirePage() {
                 {[
                   { label: "Ticker",     value: "$RISH" },
                   { label: "Quantity",   value: "1 engineer" },
-                  { label: "Type",       value: orderType },
-                  { label: "Ask Price",  value: "competitive" },
+                  { label: "Type",       value: offerType },
+                  { label: "Salary",     value: "competitive" },
                   { label: "Available",  value: "immediately" },
                   { label: "Location",   value: "San Francisco, CA" },
                 ].map(({ label, value }) => (
@@ -126,12 +165,25 @@ export default function HirePage() {
 
             <h2 className="text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white mb-1">Order Placed</h2>
             <p className="text-sm text-gray-400 dark:text-gray-600 mb-8">
-              Your {orderType.toLowerCase()} order for 1 share of $RISH has been submitted.
+              Your {offerType.toLowerCase()} order for 1 share of $RISH has been submitted.
             </p>
+
+            {/* Handwritten annotation pointing at the contact card */}
+            <div className="flex items-start justify-end gap-0.5 pr-10 -mb-2">
+              <motion.span
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="font-[family-name:var(--font-caveat)] text-xl leading-none text-red-500 -rotate-6"
+              >
+                contact me here!
+              </motion.span>
+              <ScribbleArrow />
+            </div>
 
             {/* Contact card */}
             <div className="border border-gray-200 dark:border-gray-800 rounded-2xl p-5 text-left mb-4">
-              <p className="text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-4">Settlement Details</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-600 uppercase tracking-widest mb-4">How to reach me</p>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400 dark:text-gray-600">Email</span>
@@ -166,8 +218,8 @@ export default function HirePage() {
                   </a>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400 dark:text-gray-600">Settlement</span>
-                  <span className="text-xs font-medium text-black dark:text-white">T+1 (reply within 24h)</span>
+                  <span className="text-xs text-gray-400 dark:text-gray-600">Response time</span>
+                  <span className="text-xs font-medium text-black dark:text-white">within 24h</span>
                 </div>
               </div>
             </div>
