@@ -11,6 +11,7 @@ import FadeIn from "@/components/FadeIn"
 import RotatingSubtitle from "@/components/RotatingSubtitle"
 import Greeting from "@/components/Greeting"
 import AboutText from "@/components/AboutText"
+import BookCall from "@/components/BookCall"
 import { getAllSections } from "@/lib/content/store"
 
 export const revalidate = 30
@@ -80,6 +81,14 @@ export default async function Home() {
               projects
             </h2>
             <ProjectsGrid projects={content.projects} />
+          </FadeIn>
+
+          {/* book a call */}
+          <FadeIn className="mt-12">
+            <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
+              book a call
+            </h2>
+            <BookCall />
           </FadeIn>
 
           {/* visitor counter */}
