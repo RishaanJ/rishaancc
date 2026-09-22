@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const RAW = [
   { o: 42, h: 47, l: 40, c: 45 },
@@ -128,20 +129,24 @@ const analysts = [
 const NUDGE_SEEN = "rish-ticker-seen"
 
 export default function StockTicker() {
+  const pathname = usePathname()
+  const hiddenOnGodan = pathname === "/godan"
   const [open, setOpen] = useState(false)
   const [price, setPrice] = useState(68.42)
   const [nudge, setNudge] = useState(false)
 
   useEffect(() => {
+    if (hiddenOnGodan) return
     const id = setInterval(() => {
       setPrice(p => parseFloat((p + (Math.random() - 0.46) * 0.08).toFixed(2)))
     }, 2200)
     return () => clearInterval(id)
-  }, [])
+  }, [hiddenOnGodan])
 
   // First visit only: let the page settle, point out the pill, then get out of
   // the way on its own if it's ignored.
   useEffect(() => {
+    if (hiddenOnGodan) return
     if (localStorage.getItem(NUDGE_SEEN)) return
 
     const show = setTimeout(() => setNudge(true), 1800)
@@ -154,7 +159,7 @@ export default function StockTicker() {
       clearTimeout(show)
       clearTimeout(hide)
     }
-  }, [])
+  }, [hiddenOnGodan])
 
   const dismissNudge = () => {
     setNudge(false)
@@ -164,6 +169,8 @@ export default function StockTicker() {
   const change = (price - 68.42).toFixed(2)
   const pct = (((price - 68.42) / 68.42) * 100).toFixed(2)
   const up = price >= 68.42
+
+  if (hiddenOnGodan) return null
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2">

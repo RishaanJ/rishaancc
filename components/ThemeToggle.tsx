@@ -1,9 +1,10 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
+import { useSyncExternalStore } from "react"
 import { Sun, Moon, Monitor } from "lucide-react"
 import { track } from "@vercel/analytics"
+import { usePathname } from "next/navigation"
 
 const options = [
   { value: "light", icon: Sun },
@@ -12,11 +13,10 @@ const options = [
 ]
 
 export default function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-  if (!mounted) return null
+  const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false)
+  if (!mounted || pathname === "/godan") return null
 
   const switchTheme = (value: string, e: React.MouseEvent) => {
     if (value === theme) return
@@ -35,7 +35,7 @@ export default function ThemeToggle() {
 
     document.documentElement.style.setProperty("--vt-x", `${x}px`)
     document.documentElement.style.setProperty("--vt-y", `${y}px`)
-    document.documentElement.dataset.vtDark = isDark ? "1" : "0"
+    document.documentElement.setAttribute("data-vt-dark", isDark ? "1" : "0")
 
     document.startViewTransition(() => {
       setTheme(value)

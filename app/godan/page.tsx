@@ -1,38 +1,32 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeftIcon } from "@radix-ui/react-icons"
-import { GridPattern } from "@/components/ui/grid-pattern"
-import FadeIn from "@/components/FadeIn"
+import { Instrument_Serif } from "next/font/google"
+import localFont from "next/font/local"
+import GodanReveal from "./GodanReveal"
+import styles from "./godan.module.css"
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+})
+
+const pecita = localFont({
+  src: "./fonts/Pecita.otf",
+  variable: "--font-pecita",
+  display: "swap",
+})
 
 const SUPPORT_EMAIL = "rishaanjain188@gmail.com"
 const MAILTO = `mailto:${SUPPORT_EMAIL}?subject=godan%20support`
 
 export const metadata: Metadata = {
-  title: "godan — support",
+  title: "godan — make room for a book",
   description:
-    "Help and contact for godan, a reader for iPhone that shows a book one word at a time.",
+    "A quieter way to read on iPhone. Godan brings your book to you one word at a time, at your own pace.",
 }
-
-// Screenshots are 1242×2688 App Store frames, resized and re-encoded. Width and
-// height below are the real pixel dimensions so the browser reserves the space.
-const PREVIEWS = [
-  {
-    src: "/godan-library.webp",
-    alt: "The godan library, listing books like Atomic Habits and Thus Spoke Zarathustra with an add a book button.",
-    caption: "your library",
-  },
-  {
-    src: "/godan-reader.webp",
-    alt: "The godan reader showing a single word in the middle of the screen above a speed dial set to 325 words per minute.",
-    caption: "the reader",
-  },
-  {
-    src: "/godan-stats.webp",
-    alt: "The godan stats screen showing words read, time reading, effective pace and reading streaks.",
-    caption: "what you've read",
-  },
-]
 
 const QUESTIONS = [
   {
@@ -52,6 +46,18 @@ const QUESTIONS = [
     a: "you shouldn't have. godan remembers where you stopped in each book — open it again and press play. the page count under the reader tells you where you are.",
   },
   {
+    q: "my book won't open — it says there's no readable text.",
+    a: "the file is almost certainly a scan: photographs of pages rather than text. there are no words in it for godan to show, only pictures of words. a copy with real text in it will open straight away, and you can usually tell the difference by trying to select a sentence in any other reader.",
+  },
+  {
+    q: "what does it cost?",
+    a: "two books are free. after that it's a single payment of $2.99 that lifts the limit for good. it isn't a subscription and there's nothing else to buy.",
+  },
+  {
+    q: "i paid, but the app is asking me to pay again.",
+    a: "it shouldn't. open the unlock screen and tap restore a purchase — that asks apple what you already own and puts it back. it works on a new phone too, as long as you're signed in with the same apple account you bought it with. if it still won't come back, email me.",
+  },
+  {
     q: "a book won't open, or the app closed on its own.",
     a: "that's a bug and i'd like to know about it. email me with the name of the book and what you were doing when it happened, and i'll take a look.",
   },
@@ -61,149 +67,147 @@ const QUESTIONS = [
   },
 ]
 
+function VideoSlot({
+  number,
+  title,
+  description,
+}: {
+  number: string
+  title: string
+  description: string
+}) {
+  return (
+    <div className={styles.videoSlot} role="img" aria-label={`${title}. Real-life video placeholder.`}>
+      <div className={styles.videoSlotTop} aria-hidden="true">
+        <span>GODAN / REAL-LIFE VIDEO</span>
+        <span>{number} — 02</span>
+      </div>
+      <div className={styles.videoSlotCenter} aria-hidden="true">
+        <span className={styles.playSymbol}>▶</span>
+        <span className={styles.slotTitle}>{title}</span>
+        <span className={styles.slotDescription}>{description}</span>
+      </div>
+      <span className={styles.videoSlotBottom} aria-hidden="true">FOOTAGE TO BE ADDED</span>
+    </div>
+  )
+}
+
 export default function GodanPage() {
   return (
-    <div className="relative min-h-screen bg-white dark:bg-black overflow-hidden flex justify-center">
-      <GridPattern
-        width={40}
-        height={40}
-        className="absolute inset-0 h-full w-full fill-transparent stroke-gray-200/30 dark:stroke-gray-800/30 [mask-image:radial-gradient(ellipse_at_top,white_20%,transparent_70%)]"
-      />
-
-      <main className="relative z-10 w-full max-w-3xl flex flex-col pt-16 sm:pt-20 px-5 sm:px-8 mx-auto font-[family-name:var(--font-geist-sans)]">
-
-        {/* Nav */}
-        <nav className="mb-3 flex items-center gap-5 text-xs text-black dark:text-white animate-pop-in delay-1">
-          <Link href="/" className="nav-link flex items-center gap-1.5">
-            <ArrowLeftIcon className="w-3 h-3" /> home
-          </Link>
-          <a
-            href={MAILTO}
-            className="nav-link ml-auto text-gray-400 dark:text-gray-600 hover:text-black dark:hover:text-white transition-colors"
-          >
-            {SUPPORT_EMAIL}
-          </a>
+    <main id="top" className={`${styles.page} ${instrumentSerif.variable} ${pecita.variable}`}>
+      <header className={styles.header}>
+        <nav className={styles.nav} aria-label="Godan navigation">
+          <a href="#top" className={styles.navBrand} aria-label="Godan, back to top">Godan</a>
+          <div className={styles.navLinks}>
+            <a href="#idea">the idea</a>
+            <a href="#note">a note</a>
+            <a href="#questions">questions</a>
+          </div>
         </nav>
+      </header>
 
-        {/* Hero */}
-        <div className="animate-pop-in delay-2 mt-8">
-          <p className="text-[11px] tracking-[0.15em] uppercase text-gray-400 dark:text-gray-600 mb-4">
-            support
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.05]">
-            godan
-          </h1>
-          <p className="mt-5 text-base text-gray-500 dark:text-gray-400 max-w-md leading-relaxed">
-            a reader for iPhone that shows a book one word at a time, in the
-            middle of the screen. this page is where to get help with it.
-          </p>
+      <section className={styles.hero} aria-labelledby="godan-title">
+        <div className={styles.heroIcon}>
+          <Image
+            src="/godan-book-logo.png"
+            alt=""
+            width={378}
+            height={382}
+            priority
+            className={styles.logoImage}
+          />
         </div>
+        <h1 id="godan-title" className={styles.wordmark}>godan</h1>
+        <p className={styles.heroLine}>make room for a book.</p>
+        <p className={styles.heroDescription}>
+          One word at a time. At your own pace. For the moments you didn&apos;t think were long enough to read.
+        </p>
+        <div className={styles.comingSoon} aria-label="Godan for iPhone, coming soon">
+          <svg className={styles.comingSoonIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
+          </svg>
+          Coming soon <span className={styles.comingSoonDetail}>for iPhone</span>
+        </div>
+        <p className={styles.heroFootnote}>A little less page. A little more story.</p>
+      </section>
 
-        {/* What it is */}
-        <FadeIn className="mt-16" delay={0.05}>
-          <div className="flex flex-col gap-4 max-w-md text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-            <p>
-              nothing on the screen moves except the word you&apos;re on, so your
-              eyes don&apos;t have to travel. you set the pace and the book comes
-              to you.
-            </p>
-            <p>
-              it&apos;s meant for the gaps — a queue, a train, ten minutes before
-              bed — where holding a paperback is awkward and a wall of small text
-              is worse.
-            </p>
-          </div>
-        </FadeIn>
+      <GodanReveal className={styles.firstFilm}>
+        <VideoSlot
+          number="01"
+          title="a book, anywhere"
+          description="A real moment of reading on an iPhone will live here."
+        />
+      </GodanReveal>
 
-        {/* Previews */}
-        <FadeIn className="mt-16" delay={0.05}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-4 justify-items-center">
-            {PREVIEWS.map(({ src, alt, caption }) => (
-              <figure key={src} className="w-full max-w-[280px] sm:max-w-none">
-                <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-white">
-                  <Image
-                    src={src}
-                    alt={alt}
-                    width={739}
-                    height={1600}
-                    sizes="(min-width: 640px) 240px, 280px"
-                    className="w-full h-auto"
-                  />
-                </div>
-                <figcaption className="mt-3 text-[11px] text-gray-400 dark:text-gray-600 text-center">
-                  {caption}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </FadeIn>
-
-        {/* Common questions */}
-        <FadeIn className="mt-20" delay={0.05}>
-          <h2 className="text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
-            common questions
-          </h2>
-          <dl className="flex flex-col divide-y divide-gray-100 dark:divide-gray-900">
-            {QUESTIONS.map(({ q, a }) => (
-              <div key={q} className="py-5 flex flex-col gap-1.5">
-                <dt className="text-sm font-medium text-black dark:text-white tracking-[-0.02em]">
-                  {q}
-                </dt>
-                <dd className="text-xs text-gray-400 dark:text-gray-600 leading-relaxed max-w-md">
-                  {a}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </FadeIn>
-
-        {/* Contact */}
-        <FadeIn className="mt-16" delay={0.05}>
-          <h2 className="text-2xl font-semibold tracking-[-0.05em] text-black dark:text-white leading-[1.1] mb-5">
-            still stuck
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-md">
-            email me. one person reads these — that&apos;s me — and you&apos;ll
-            usually hear back within a day or two. it helps if you say which
-            iPhone you&apos;re on and what you were doing when things went wrong.
+      <section id="idea" className={styles.ideaSection} aria-labelledby="idea-title">
+        <GodanReveal className={styles.ideaCopy}>
+          <h2 id="idea-title">The book comes to you.</h2>
+          <p>
+            A queue. A train. Ten minutes before bed. Godan makes those little spaces feel like enough.
           </p>
-          <div className="mt-6 flex items-center justify-between rounded-xl border border-gray-200 dark:border-gray-800 px-5 py-4">
-            <div className="flex flex-col gap-0.5">
-              <p className="text-xs font-medium text-black dark:text-white">
-                godan support
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-600">
-                {SUPPORT_EMAIL}
-              </p>
-            </div>
-            <a
-              href={MAILTO}
-              className="shrink-0 rounded-lg bg-black dark:bg-white text-white dark:text-black text-xs font-medium px-4 py-2 hover:opacity-80 transition-opacity"
-            >
-              write to me
-            </a>
-          </div>
-        </FadeIn>
+          <p>
+            The words stay in one place, so your eyes don&apos;t have to travel. Set a pace that feels right, pause whenever you like, and pick up exactly where you left off.
+          </p>
+          <p className={styles.ideaLast}>Just you and the next word.</p>
+        </GodanReveal>
+      </section>
 
-        {/* Footer */}
-        <FadeIn className="mt-12 mb-24" delay={0.05}>
-          <div className="flex items-center gap-5 text-xs text-gray-400 dark:text-gray-600">
-            <Link
-              href="/godan/privacy"
-              className="nav-link hover:text-black dark:hover:text-white transition-colors"
-            >
-              privacy
-            </Link>
-            <Link
-              href="/"
-              className="nav-link hover:text-black dark:hover:text-white transition-colors"
-            >
-              rishaan.cc
-            </Link>
-          </div>
-        </FadeIn>
+      <GodanReveal className={styles.secondFilm}>
+        <VideoSlot
+          number="02"
+          title="a moment to keep"
+          description="A real-life look at the reader and its simple controls will live here."
+        />
+      </GodanReveal>
 
-      </main>
-    </div>
+      <section id="note" className={styles.noteSection} aria-labelledby="note-title">
+        <GodanReveal className={styles.noteInner}>
+          <p className={styles.sectionLabel}>A NOTE FROM THE MAKER</p>
+          <h2 id="note-title">Dear reader,</h2>
+          <div className={styles.noteBody}>
+            <p>
+              Honestly, I&apos;ve always wanted to read more than I actually do. I have ADHD, my phone is always right there, and some days even opening a book feels like a big ask.
+            </p>
+            <p>
+              So I made Godan for myself. One word at a time, at a pace I can set. I wanted it to feel easier to start, and easier to keep going when I only have a few minutes.
+            </p>
+            <p>I&apos;m not trying to race through books. I just want to spend more time with them. If Godan helps you do that too, that would mean a lot.</p>
+            <p>Hope it helps,</p>
+          </div>
+          <p className={styles.signature}>Rishaan</p>
+        </GodanReveal>
+      </section>
+
+      <section id="questions" className={styles.questionsSection} aria-labelledby="questions-title">
+        <GodanReveal>
+          <h2 id="questions-title">Good questions.</h2>
+          <p className={styles.questionsIntro}>Everything you might want to know before opening your next book.</p>
+          <div className={styles.questionsList}>
+            {QUESTIONS.map(({ q, a }) => (
+              <details key={q} className={styles.question}>
+                <summary>{q}<span aria-hidden="true" className={styles.questionIcon}>+</span></summary>
+                <p>{a}</p>
+              </details>
+            ))}
+          </div>
+        </GodanReveal>
+      </section>
+
+      <footer className={styles.footer}>
+        <GodanReveal>
+          <div className={styles.footerIcon} aria-hidden="true">
+            <Image src="/godan-book-logo.png" alt="" width={378} height={382} />
+          </div>
+          <h2>one more page?</h2>
+          <p>Godan for iPhone is coming soon.</p>
+          <span className={styles.footerStatus}>COMING SOON</span>
+          <div className={styles.footerLinks}>
+            <a href={MAILTO}>get in touch</a>
+            <Link href="/godan/privacy">privacy</Link>
+            <Link href="/">rishaan.cc</Link>
+          </div>
+        </GodanReveal>
+      </footer>
+    </main>
   )
 }

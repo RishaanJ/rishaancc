@@ -70,7 +70,7 @@ export default function GodanPrivacyPage() {
         {/* Nav */}
         <nav className="mb-3 flex items-center gap-5 text-xs text-black dark:text-white animate-pop-in delay-1">
           <Link href="/godan" className="nav-link flex items-center gap-1.5">
-            <ArrowLeftIcon className="w-3 h-3" /> godan support
+            <ArrowLeftIcon className="w-3 h-3" /> godan
           </Link>
         </nav>
 
